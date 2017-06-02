@@ -127,7 +127,11 @@ class PFTemplateField {
 		// We have some "pseudo-types", used for setting the correct
 		// form input.
 		if ( $fieldDescription->mAllowedValues != null ) {
-			$this->mFieldType = 'Enumeration';
+			if( $fieldDescription->mIsHierarchy == true ) {
+				$this->mFieldType = 'hierarchy';
+			} else {
+				$this->mFieldType = 'Enumeration';
+			}			
 		} elseif ( $fieldDescription->mType == 'Text' && $fieldDescription->mSize != '' && $fieldDescription->mSize <= 100 ) {
 			$this->mFieldType = 'String';
 		} else {

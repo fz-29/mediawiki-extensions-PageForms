@@ -40,6 +40,18 @@ class PFTreeInput extends PFFormInput {
 		}
 	}
 
+	public static function getDefaultCargoTypes() {
+		return array(
+			'hierarchy' => array()
+		);
+	}
+
+	public static function getDefaultCargoTypeLists() {
+		return array(
+			'hierarchy' => array()
+		);
+	}
+
 	public static function getOtherCargoTypesHandled() {
 		return array( 'String', 'Page' );
 	}
@@ -51,10 +63,10 @@ class PFTreeInput extends PFFormInput {
 	public static function getHTML( $cur_value, $input_name, $is_mandatory, $is_disabled, $other_args ) {
 		// Handle the now-deprecated 'category' and 'categories'
 		// input types.
-		if ( $other_args['input type'] == 'category' ) {
+		if ( array_key_exists( 'input type', $other_args ) && $other_args['input type'] == 'category' ) {
 			$inputType = "radio";
 			self::$multipleSelect = false;
-		} elseif ( $other_args['input type'] == 'categories' ) {
+		} elseif ( array_key_exists( 'input type', $other_args ) && $other_args['input type'] == 'categories' ) {
 			$inputType = "checkbox";
 			self::$multipleSelect = true;
 		} else {
@@ -107,6 +119,16 @@ class PFTreeInput extends PFFormInput {
 			$structure = $other_args['structure'];
 			$tree = PFTree::newFromWikiText( $structure );
 			$hideroot = true;
+		} elseif ( array_key_exists( 'possible_values', $other_args ) ) {
+			//The possibility of field being of type - 'hierarchy' pseudo-type
+				if ( count( $other_args['possible_values'] ) >= 1) {
+					$structure = $other_args['possible_values'][0];
+					$tree = PFTree::newFromWikiText( $structure );
+					$hideroot = true;
+				} else {
+					return null;
+				}
+
 		} else {
 			// Escape - we can't do anything.
 			return null;
